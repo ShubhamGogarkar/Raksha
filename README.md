@@ -18,7 +18,7 @@ Create a `.env` file:
 
 ```env
 PORT=3000
-CORS_ORIGIN=http:
+CORS_ORIGIN=
 MONGODB_URI=<your-mongodb-connection-string>
 ```
 
