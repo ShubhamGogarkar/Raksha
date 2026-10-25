@@ -13,7 +13,7 @@ const registerDevice = asyncHandler(async (req, res) => {
   }
 
   const existedUser = await User.findOne({
-    $or: [{ email }, { username }, {devicesId: { $in: deviceId }}],
+    $or: [{ email }, { username }, {deviceId}],
   });
 
   if (existedUser) {
@@ -26,7 +26,7 @@ const registerDevice = asyncHandler(async (req, res) => {
     username: username.toLowerCase(),
     email,
     emergencyContacts: [emergencyContact],
-    devicesId: [deviceId],
+    deviceId,
   });
 
   if (!user) {
@@ -44,7 +44,7 @@ const getEmergencyContacts = asyncHandler(async (req, res) => {
     throw new ApiError(400, "deviceId is required");
    }
 
-   const EmergencyContacts = await User.findOne({ devicesId: deviceId }).select("emergencyContacts");
+   const EmergencyContacts = await User.findOne({ deviceId: deviceId }).select("emergencyContacts");
 
    if(!EmergencyContacts){
     throw new ApiError(404, "contacts not found");
@@ -62,7 +62,7 @@ const updateDeviceDetails = asyncHandler(async (req, res) => {
   }
 
   const user = await User.findOneAndUpdate(
-    { devicesId: deviceId },
+    { deviceId: deviceId },
     { fullName, email },
     {
       returnDocument: "after",
@@ -83,13 +83,13 @@ const { deviceId, emergencyContact } = req.body;
 if (!deviceId || !emergencyContact) {
   throw new ApiError(400, "deviceId and emergencyContact are required");
 }
-const alreadyExists = await User.findOne({ devicesId: deviceId, emergencyContacts: emergencyContact });
+const alreadyExists = await User.findOne({ deviceId: deviceId, emergencyContacts: emergencyContact });
 if (alreadyExists) {
   throw new ApiError(409, "Emergency contact already exists");
 }
 
 const user = await User.findOneAndUpdate(
-  { devicesId: deviceId },
+  { deviceId: deviceId },
   { $addToSet: { emergencyContacts: emergencyContact } },
   {
       returnDocument: "after",
@@ -112,7 +112,7 @@ const removeEmergencyContact = asyncHandler(async (req, res) => {
   }
 
   const user = await User.findOneAndUpdate(
-    { devicesId: deviceId },
+    { deviceId: deviceId },
     { $pull: { emergencyContacts: emergencyContact } },
     {
       returnDocument: "after",

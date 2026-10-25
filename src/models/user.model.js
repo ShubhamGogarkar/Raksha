@@ -36,12 +36,12 @@ const UserSchema = new mongoose.Schema({
       }
     ],
 
-    devicesId:[{
+    deviceId:{
       type: String,
       required: true,
       trim: true,
       unique: true
-    }]
+    }
     
 
 }, {timestamps: true});
