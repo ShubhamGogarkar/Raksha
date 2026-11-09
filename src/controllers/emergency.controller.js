@@ -1,4 +1,4 @@
-import { Resend } from 'resend';
+import nodemailer from "nodemailer";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
@@ -17,14 +17,24 @@ const postEmergencyEmailAlert = asyncHandler(async (req, res) => {
     throw new ApiError(404, "User not found");
   }
 
-  const resend = new Resend(process.env.RESEND_API_KEY);
-
-resend.emails.send({
-  from: 'Raksha',
-  to: process.env.MY_EMAIL,
-    subject: `Alert for ${user.fullName}`,
-    text: `Emergency Alert from ${user.fullName} (Device ID: ${deviceId})\n\nIntensity: ${intensity}\n\nPlease take immediate action. the location of the user is ${location}`,
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: process.env.GMAIL_USER,
+    pass: process.env.GMAIL_APP_PASSWORD,
+  },
 });
+
+try {
+   await transporter.sendMail({
+      from: `"RAKSHA:" <${process.env.GMAIL_USER}>`,
+      to: user.email,
+      subject: `Emergency Alert from Device ${deviceId}`,
+      text: `From: RAKSHA\n\nEmergency Alert!\n\nDevice ID: ${deviceId}\nIntensity: ${intensity}\nLocation: ${location}`,
+    });}
+    catch (error) {
+      throw new ApiError(500, `Failed to send email alert:${error.message}`);
+    }
 
   return res
     .status(200)
