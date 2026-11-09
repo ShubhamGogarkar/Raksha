@@ -38,21 +38,6 @@ const registerDevice = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, user, "user created successfully"));
 });
 
-const getEmergencyContacts = asyncHandler(async (req, res) => {
-    const { deviceId } = req.params;
-   if(!deviceId){
-    throw new ApiError(400, "deviceId is required");
-   }
-
-   const EmergencyContacts = await User.findOne({ deviceId: deviceId }).select("emergencyContacts");
-
-   if(!EmergencyContacts){
-    throw new ApiError(404, "contacts not found");
-   }
-  return res
-    .status(200)
-    .json(new ApiResponse(200, EmergencyContacts, "Emergency contacts fetched successfully"));
-});
 
 const updateDeviceDetails = asyncHandler(async (req, res) => {
   const { fullName, email, deviceId } = req.body;
@@ -131,7 +116,6 @@ const removeEmergencyContact = asyncHandler(async (req, res) => {
 
 export {
   registerDevice,
-  getEmergencyContacts,
   updateDeviceDetails,
   addEmergencyContact,
   removeEmergencyContact,

@@ -16,6 +16,7 @@ app.use(cookieParser())
 
 import userRouter from './routes/user.route.js'
 import healthcheckRouter from "./routes/healthcheck.route.js"
+import emergencyRouter from "./routes/emergency.route.js"
 
 import { apiLimiter } from "./middlewares/rateLimiter.middleware.js";
 app.use("/api", apiLimiter);
@@ -23,6 +24,7 @@ app.use("/api", apiLimiter);
 
 app.use("/api/v1/healthcheck", healthcheckRouter)
 app.use("/api/v1/users", userRouter)
+app.use("/api/v1/emergency", emergencyRouter)
 
 
 app.use((err, req, res, next) => {
